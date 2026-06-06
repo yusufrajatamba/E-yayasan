@@ -1,0 +1,154 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "Anggota jemaat gereja",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nama": { "type": "string" },
+        "tglUlangTahun": { "type": "string" },
+        "tglPernikahan": { "type": "string" },
+        "phone": { "type": "string" },
+        "alamat": { "type": "string" },
+        "sektor": { "type": "string" },
+        "statusKeluarga": { "type": "string" }
+      },
+      "required": ["id", "nama", "tglUlangTahun"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Transaksi keuangan gereja",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "keterangan": { "type": "string" },
+        "donor": { "type": "string" }
+      },
+      "required": ["id", "category", "amount", "date", "keterangan"]
+    },
+    "Asset": {
+      "title": "Asset",
+      "description": "Aset inventaris gereja",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "namaBarang": { "type": "string" },
+        "jumlah": { "type": "number" },
+        "kondisi": { "type": "string" },
+        "lokasi": { "type": "string" },
+        "tanggalPerolehan": { "type": "string" }
+      },
+      "required": ["id", "namaBarang", "jumlah", "kondisi", "lokasi", "tanggalPerolehan"]
+    },
+    "Bill": {
+      "title": "Bill",
+      "description": "Tagihan iuran atau kontribusi sektor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "namaTagihan": { "type": "string" },
+        "untukSektor": { "type": "string" },
+        "jumlahTagihan": { "type": "number" },
+        "tanggalJatuhTempo": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "namaTagihan", "untukSektor", "jumlahTagihan", "tanggalJatuhTempo", "status"]
+    },
+    "Schedule": {
+      "title": "Schedule",
+      "description": "Jadwal ibadah",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "namaIbadah": { "type": "string" },
+        "tanggalIbadah": { "type": "string" },
+        "waktuIbadah": { "type": "string" },
+        "pemberitaFirman": { "type": "string" },
+        "petugasLiturgi": { "type": "string" },
+        "pemimpinPujian": { "type": "string" }
+      },
+      "required": ["id", "namaIbadah", "tanggalIbadah", "waktuIbadah", "pemberitaFirman", "petugasLiturgi", "pemimpinPujian"]
+    },
+    "Committee": {
+      "title": "Committee",
+      "description": "Kepanitiaan khusus atau seksi pelayanan kebaktian",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "namaKepanitiaan": { "type": "string" },
+        "deskripsi": { "type": "string" },
+        "tanggalDibentuk": { "type": "string" },
+        "status": { "type": "string" },
+        "anggotaList": { "type": "array" }
+      },
+      "required": ["id", "namaKepanitiaan", "tanggalDibentuk", "status"]
+    },
+    "Budget": {
+      "title": "Budget",
+      "description": "Rencana Anggaran Belanja (RAB) Gereja",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nama": { "type": "string" },
+        "kategori": { "type": "string" },
+        "alokasi": { "type": "number" },
+        "terpakai": { "type": "number" },
+        "keterangan": { "type": "string" }
+      },
+      "required": ["id", "nama", "kategori", "alokasi"]
+    },
+    "Bulletin": {
+      "title": "Bulletin",
+      "description": "Warta Jemaat / Buletin Bulanan Gereja",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bulan": { "type": "string" },
+        "judul": { "type": "string" },
+        "tanggalRilis": { "type": "string" },
+        "temaMingguan": { "type": "string" },
+        "ringkasanKhotba": { "type": "string" },
+        "wartaJemaat": { "type": "string" }
+      },
+      "required": ["id", "bulan", "judul", "tanggalRilis"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": {
+      "schema": "Member",
+      "description": "Collection of church members"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Collection of church financial transactions"
+    },
+    "/assets/{assetId}": {
+      "schema": "Asset",
+      "description": "Collection of church inventory assets"
+    },
+    "/bills/{billId}": {
+      "schema": "Bill",
+      "description": "Collection of sector bills & dues"
+    },
+    "/schedules/{scheduleId}": {
+      "schema": "Schedule",
+      "description": "Collection of worship schedules"
+    },
+    "/committees/{committeeId}": {
+      "schema": "Committee",
+      "description": "Collection of church committees"
+    },
+    "/budgets/{budgetId}": {
+      "schema": "Budget",
+      "description": "Collection of church budgeting items"
+    },
+    "/bulletins/{bulletinId}": {
+      "schema": "Bulletin",
+      "description": "Collection of church monthly or weekly bulletins"
+    }
+  }
+}

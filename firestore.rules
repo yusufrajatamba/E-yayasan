@@ -1,0 +1,167 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_ .@\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation for Member
+    function isValidMember(data) {
+      return data.keys().hasAll(['id', 'nama', 'tglUlangTahun']) &&
+             data.id is string && isValidId(data.id) &&
+             data.nama is string && data.nama.size() > 0 && data.nama.size() <= 200 &&
+             data.tglUlangTahun is string && data.tglUlangTahun.size() <= 30;
+    }
+
+    // Validation for Transaction
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['id', 'category', 'amount', 'date', 'keterangan']) &&
+             data.id is string && isValidId(data.id) &&
+             data.category is string && (data.category == 'Ibadah Umum' || data.category == 'Ucapan Syukur' || data.category == 'Persepuluhan' || data.category == 'Sektor') &&
+             data.amount is number && data.amount >= 0 &&
+             data.date is string && data.date.size() <= 30 &&
+             data.keterangan is string && data.keterangan.size() <= 1000;
+    }
+
+    // Validation for Asset
+    function isValidAsset(data) {
+      return data.keys().hasAll(['id', 'namaBarang', 'jumlah', 'kondisi', 'lokasi', 'tanggalPerolehan']) &&
+             data.id is string && isValidId(data.id) &&
+             data.namaBarang is string && data.namaBarang.size() > 0 && data.namaBarang.size() <= 500 &&
+             data.jumlah is number && data.jumlah >= 0 &&
+             data.kondisi is string && (data.kondisi == 'Baik' || data.kondisi == 'Perlu Perbaikan' || data.kondisi == 'Rusak') &&
+             data.lokasi is string && data.lokasi.size() <= 500 &&
+             data.tanggalPerolehan is string && data.tanggalPerolehan.size() <= 30;
+    }
+
+    // Validation for Bill
+    function isValidBill(data) {
+      return data.keys().hasAll(['id', 'namaTagihan', 'untukSektor', 'jumlahTagihan', 'tanggalJatuhTempo', 'status']) &&
+             data.id is string && isValidId(data.id) &&
+             data.namaTagihan is string && data.namaTagihan.size() > 0 && data.namaTagihan.size() <= 500 &&
+             data.untukSektor is string && data.untukSektor.size() <= 200 &&
+             data.jumlahTagihan is number && data.jumlahTagihan >= 0 &&
+             data.tanggalJatuhTempo is string && data.tanggalJatuhTempo.size() <= 30 &&
+             data.status is string && (data.status == 'Lunas' || data.status == 'Belum Lunas');
+    }
+
+    // Validation for Schedule
+    function isValidSchedule(data) {
+      return data.keys().hasAll(['id', 'namaIbadah', 'tanggalIbadah', 'waktuIbadah', 'pemberitaFirman', 'petugasLiturgi', 'pemimpinPujian']) &&
+             data.id is string && isValidId(data.id) &&
+             data.namaIbadah is string && data.namaIbadah.size() > 0 && data.namaIbadah.size() <= 500 &&
+             data.tanggalIbadah is string && data.tanggalIbadah.size() <= 30 &&
+             data.waktuIbadah is string && data.waktuIbadah.size() <= 10 &&
+             data.pemberitaFirman is string && data.pemberitaFirman.size() <= 250 &&
+             data.petugasLiturgi is string && data.petugasLiturgi.size() <= 250 &&
+             data.pemimpinPujian is string && data.pemimpinPujian.size() <= 250;
+    }
+
+    // Validation for User
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'username', 'password', 'nama', 'role']) &&
+             data.id is string && isValidId(data.id) &&
+             data.username is string && data.username.size() > 0 && data.username.size() <= 200 &&
+             data.password is string && data.password.size() > 0 && data.password.size() <= 200 &&
+             data.nama is string && data.nama.size() > 0 && data.nama.size() <= 200 &&
+             data.role is string && data.role.size() > 0 && data.role.size() <= 200;
+    }
+
+    // Validation for Committee
+    function isValidCommittee(data) {
+      return data.keys().hasAll(['id', 'namaKepanitiaan', 'deskripsi', 'tanggalDibentuk', 'status', 'anggotaList']) &&
+             data.id is string && isValidId(data.id) &&
+             data.namaKepanitiaan is string && data.namaKepanitiaan.size() > 0 && data.namaKepanitiaan.size() <= 500 &&
+             data.deskripsi is string && data.deskripsi.size() <= 1000 &&
+             data.tanggalDibentuk is string && data.tanggalDibentuk.size() <= 30 &&
+             data.status is string && (data.status == 'Aktif' || data.status == 'Selesai Tugas' || data.status == 'Draf') &&
+             data.anggotaList is list;
+    }
+
+    // Validation for Budget
+    function isValidBudget(data) {
+      return data.keys().hasAll(['id', 'nama', 'kategori', 'alokasi']) &&
+             data.id is string && isValidId(data.id) &&
+             data.nama is string && data.nama.size() > 0 && data.nama.size() <= 500 &&
+             data.kategori is string && data.kategori.size() > 0 && data.kategori.size() <= 200 &&
+             data.alokasi is number && data.alokasi >= 0;
+    }
+
+    // Validation for Bulletin
+    function isValidBulletin(data) {
+      return data.keys().hasAll(['id', 'bulan', 'judul', 'tanggalRilis']) &&
+             data.id is string && isValidId(data.id) &&
+             data.bulan is string && data.bulan.size() > 0 && data.bulan.size() <= 100 &&
+             data.judul is string && data.judul.size() > 0 && data.judul.size() <= 500 &&
+             data.tanggalRilis is string && data.tanggalRilis.size() > 0;
+    }
+
+    // Match blocks
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId) && isValidUser(incoming());
+      allow delete: if isValidId(userId);
+    }
+    match /members/{memberId} {
+      allow read: if true;
+      allow create, update: if isValidId(memberId) && isValidMember(incoming());
+      allow delete: if isValidId(memberId);
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if true;
+      allow create, update: if isValidId(transactionId) && isValidTransaction(incoming());
+      allow delete: if isValidId(transactionId);
+    }
+
+    match /assets/{assetId} {
+      allow read: if true;
+      allow create, update: if isValidId(assetId) && isValidAsset(incoming());
+      allow delete: if isValidId(assetId);
+    }
+
+    match /bills/{billId} {
+      allow read: if true;
+      allow create, update: if isValidId(billId) && isValidBill(incoming());
+      allow delete: if isValidId(billId);
+    }
+
+    match /schedules/{scheduleId} {
+      allow read: if true;
+      allow create, update: if isValidId(scheduleId) && isValidSchedule(incoming());
+      allow delete: if isValidId(scheduleId);
+    }
+
+    match /committees/{committeeId} {
+      allow read: if true;
+      allow create, update: if isValidId(committeeId) && isValidCommittee(incoming());
+      allow delete: if isValidId(committeeId);
+    }
+
+    match /budgets/{budgetId} {
+      allow read: if true;
+      allow create, update: if isValidId(budgetId) && isValidBudget(incoming());
+      allow delete: if isValidId(budgetId);
+    }
+
+    match /bulletins/{bulletinId} {
+      allow read: if true;
+      allow create, update: if isValidId(bulletinId) && isValidBulletin(incoming());
+      allow delete: if isValidId(bulletinId);
+    }
+  }
+}

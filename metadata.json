@@ -1,0 +1,6 @@
+{
+  "name": "e-Yayasan Kristen Dashboard",
+  "description": "Dashboard Aplikasi Manajemen Keuangan, Anggota, Komsel, dan Program Sosial Yayasan Kristen Gloria (e-Yayasan Enterprise)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

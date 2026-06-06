@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;550;600;700;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom visual refinements to match modern UI aesthetics */
+body {
+  font-family: var(--font-sans);
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* Smooth transitions */
+.transition-with-duration {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* For clean high fidelity prints */
+@media print {
+  html, body, #root, #root > div, .flex-1, main, #main-content-view, .overflow-y-auto {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  aside, header, button, select, input, .print\:hidden, [class*="fixed"] {
+    display: none !important;
+  }
+  main, #main-content-view {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    width: 100% !important;
+  }
+  /* Perfect styling for printable tables and page-breaks */
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tfoot {
+    display: table-footer-group;
+  }
+}
